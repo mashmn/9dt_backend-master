@@ -1,23 +1,13 @@
 package com._98point6.droptoken;
 
-import com._98point6.droptoken.model.CreateGameRequest;
-import com._98point6.droptoken.model.CreateGameResponse;
-import com._98point6.droptoken.model.GameStatusResponse;
-import com._98point6.droptoken.model.GetGamesResponse;
-import com._98point6.droptoken.model.GetMoveResponse;
-import com._98point6.droptoken.model.GetMovesResponse;
-import com._98point6.droptoken.model.PostMoveRequest;
-import com._98point6.droptoken.model.PostMoveResponse;
+import com._98point6.droptoken.dao.GameDao;
+import com._98point6.droptoken.dao.GetGamesDao;
+import com._98point6.droptoken.mapper.GamesMapper;
+import com._98point6.droptoken.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,17 +18,33 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class DropTokenResource {
     private static final Logger logger = LoggerFactory.getLogger(DropTokenResource.class);
+    GetGamesDao getGamesDao;
+    GameDao gameDao;
 
     public DropTokenResource() {
     }
 
+    public DropTokenResource(GetGamesDao getGamesDao) {
+        this.getGamesDao = getGamesDao;
+    }
+
     @GET
+//    public List<Game> getGames() {
+//        return gamesDao.getGames();
     public Response getGames() {
-        return Response.ok(new GetGamesResponse()).build();
+        try {
+            GetGamesResponse.Builder getGamesResponse = new GetGamesResponse.Builder()
+                    .games(getGamesDao.getGames());
+            logger.info("games = {}", getGamesResponse.build());
+            return Response.ok(getGamesResponse.build()).build();
+        } catch (Exception e) {
+            throw new NotFoundException();
+        }
     }
 
     @POST
     public Response createNewGame(CreateGameRequest request) {
+        request.getColumns();
         logger.info("request={}", request);
         return Response.ok(new CreateGameResponse()).build();
     }
@@ -46,8 +52,20 @@ public class DropTokenResource {
     @Path("/{id}")
     @GET
     public Response getGameStatus(@PathParam("id") String gameId) {
-        logger.info("gameId = {}", gameId);
-        return Response.ok(new GameStatusResponse()).build();
+        try {
+            logger.info("gameId = {}", gameId);
+//            GameStatusResponse.Builder gameStatusResponse = new GameStatusResponse.Builder()
+//                    .players(gameDao.getGameStatusPlayers(gameId))
+//                    .state(gameDao.getGameStatus(gameId).getState())
+//                    .winner(gameDao.getGameStatus(gameId).getWinner())
+                    ;
+
+            logger.info("state of the game = {}", gameDao.getGameStatusPlayers(gameId));
+//            return Response.ok(gameStatusResponse.build()).build();
+            return Response.ok(gameDao.getGameStatusPlayers(gameId).toString()).build();
+        } catch (NullPointerException  ex) {
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
+        }
     }
 
     @Path("/{id}/{playerId}")

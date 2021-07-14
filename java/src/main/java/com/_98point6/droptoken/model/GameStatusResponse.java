@@ -1,5 +1,6 @@
 package com._98point6.droptoken.model;
 
+import com._98point6.droptoken.core.GetPlayers;
 import com.google.common.base.Preconditions;
 
 import java.util.List;
@@ -9,67 +10,81 @@ import java.util.Optional;
  *
  */
 public class GameStatusResponse {
-    private List<String> players;
-    private Integer moves;
-    private String winner;
-    private String state;
+    private List<GetPlayers> players;
+//    private Integer moves;
+//    private String winner;
+//    private String state;
 
     public GameStatusResponse() {}
 
     private GameStatusResponse(Builder builder) {
         this.players = Preconditions.checkNotNull(builder.players);
-        this.moves = Preconditions.checkNotNull(builder.moves);
-        this.winner = builder.winner;
-        this.state = Preconditions.checkNotNull(builder.state);
+//        this.moves = Preconditions.checkNotNull(builder.moves);
+//        this.winner = builder.winner;
+//        this.state = Preconditions.checkNotNull(builder.state);
     }
 
-    public List<String> getPlayers() {
+    public List<GetPlayers> getPlayers() {
         return players;
     }
 
-    public Integer getMoves() {
-        return moves;
-    }
+//    public Integer getMoves() {
+//        return moves;
+//    }
 
-    public Optional<String> getWinner() {
-        return Optional.ofNullable(winner);
-    }
+//    public Optional<String> getWinner() {
+//        return Optional.ofNullable(winner);
+//    }
+//    public String getWinner() {
+//        return winner;
+//    }
 
-    public String getState() {
-        return state;
-    }
+//    public String getState() {
+//        return state;
+//    }
 
     public static class Builder {
-        private List<String> players;
-        private Integer moves;
-        private String winner;
-        private String state;
+//        private List<String> players;
+        private List<GetPlayers> players;
+//        private Integer moves;
+//        private String winner;
+//        private String state;
 
-        public Builder players(List<String> players) {
+        @Override
+        public String toString() {
+            return "games: {" +
+                    "players:'" + players + "'\'" +
+//                    "moves:'" + moves + "'\'" +
+//                    "winner:'" + winner + "'\'" +
+//                    "state:'" + state + "'\'" +
+                    "}";
+        }
+
+        public Builder players(List<GetPlayers> players) {
             this.players = players;
             return this;
         }
 
-        public Builder moves(Integer moves) {
-            this.moves = moves;
-            return this;
-        }
+//        public Builder moves(Integer moves) {
+//            this.moves = moves;
+//            return this;
+//        }
 
-        public Builder winner(String winner) {
-            this.winner = winner;
-            return this;
-        }
+//        public Builder winner(String winner) {
+//            this.winner = winner;
+//            return this;
+//        }
 
-        public Builder state(String state) {
-            this.state = state;
-            return this;
-        }
+//        public Builder state(String state) {
+//            this.state = state;
+//            return this;
+//        }
 
         public Builder fromPrototype(GameStatusResponse prototype) {
             players = prototype.players;
-            moves = prototype.moves;
-            winner = prototype.winner;
-            state = prototype.state;
+//            moves = prototype.moves;
+//            winner = prototype.winner;
+//            state = prototype.state;
             return this;
         }
 
