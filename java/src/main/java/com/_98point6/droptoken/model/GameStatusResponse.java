@@ -11,14 +11,16 @@ import java.util.Optional;
 public class GameStatusResponse {
     private List<String> players;
     private Integer moves;
-    private String winner;
+    private Optional<String> winner;
     private String state;
 
     public GameStatusResponse() {}
 
     private GameStatusResponse(Builder builder) {
-        this.players = Preconditions.checkNotNull(builder.players);
-        this.moves = Preconditions.checkNotNull(builder.moves);
+//        this.players = Preconditions.checkNotNull(builder.players);
+        this.players = builder.players;
+//        this.moves = Preconditions.checkNotNull(builder.moves);
+        this.moves = builder.moves;
         this.winner = builder.winner;
         this.state = Preconditions.checkNotNull(builder.state);
     }
@@ -32,7 +34,7 @@ public class GameStatusResponse {
     }
 
     public Optional<String> getWinner() {
-        return Optional.ofNullable(winner);
+        return winner;
     }
 
     public String getState() {
@@ -42,7 +44,7 @@ public class GameStatusResponse {
     public static class Builder {
         private List<String> players;
         private Integer moves;
-        private String winner;
+        private Optional<String> winner;
         private String state;
 
         public Builder players(List<String> players) {
@@ -56,7 +58,7 @@ public class GameStatusResponse {
         }
 
         public Builder winner(String winner) {
-            this.winner = winner;
+            this.winner = Optional.ofNullable(winner);
             return this;
         }
 

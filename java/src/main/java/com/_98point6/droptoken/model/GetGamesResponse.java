@@ -1,5 +1,6 @@
 package com._98point6.droptoken.model;
 
+import com._98point6.droptoken.entities.Games;
 import com.google.common.base.Preconditions;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
  *
  */
 public class GetGamesResponse {
-    private List<String> games;
+    private List<Games> games;
 
     public GetGamesResponse() {}
 
@@ -16,15 +17,15 @@ public class GetGamesResponse {
         this.games = Preconditions.checkNotNull(builder.games);
     }
 
-    public List<String> getGames() {
+    public List<Games> getGames() {
         return games;
     }
 
 
     public static class Builder {
-        private List<String> games;
+        private List<Games> games;
 
-        public Builder games(List<String> games) {
+        public Builder games(List<Games> games) {
             this.games = games;
             return this;
         }

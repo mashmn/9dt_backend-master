@@ -1,12 +1,12 @@
 # 98Point6 Drop-Token: At-home interview question for BE engineers #
-We would like you to implement a backend (REST web-service) that allows playing the game of 9dt, or 98point6 drop token. This should allow the players to create games, post moves, query moves and get state of games.
+We would like you to implement a backend (REST web-service) that allows playing the games of 9dt, or 98point6 drop token. This should allow the players to create games, post moves, query moves and get state of games.
 ## Rules of the Game ##
-Drop Token takes place on a 4x4 grid. A token is dropped along a column and said token goes to the lowest unoccupied row of the board. A player wins when they have 4 tokens next to each other either along a row, in a column, or on a diagonal. If the board is filled, and nobody has won then the game is a draw. Each player takes a turn, starting with player 1, until the game reaches either win or draw. If a player tries to put a token in a column that is already full, that results in an error state, and the player must play again until the play a valid move.
+Drop Token takes place on a 4x4 grid. A token is dropped along a column and said token goes to the lowest unoccupied row of the board. A player wins when they have 4 tokens next to each other either along a row, in a column, or on a diagonal. If the board is filled, and nobody has won then the games is a draw. Each player takes a turn, starting with player 1, until the games reaches either win or draw. If a player tries to put a token in a column that is already full, that results in an error state, and the player must play again until the play a valid move.
 ## Example Game
 ![samplegame](https://github.com/rafastealth/9dt_backend/blob/master/sample_game.png)
 ## Minimal Requirements: ##
-* Each game is between *k = 2* individuals, basic board size is 4x4 (number of columns x number of rows)
-* A player can quit a game at every moment while the game is still in progress. The game will continue as long as there are 2 or more active players and the game is not done. In case only a single player is left, that player is considered the winner.
+* Each games is between *k = 2* individuals, basic board size is 4x4 (number of columns x number of rows)
+* A player can quit a games at every moment while the games is still in progress. The games will continue as long as there are 2 or more active players and the games is not done. In case only a single player is left, that player is considered the winner.
 * The backend should validate that a move move is valid (it's the player's turn, column is not already full)
 * The backend should identify a winning state.
 * Multiple games may be running at the same time.
@@ -20,7 +20,7 @@ Drop Token takes place on a 4x4 grid. A token is dropped along a column and said
   *  #### Status codes ####
     * 200 - OK. On success
 
-### POST /drop_token - Create a new game. ###
+### POST /drop_token - Create a new games. ###
   * Input:
 ```
 { "players": ["player1", "player2"],
@@ -36,13 +36,13 @@ Drop Token takes place on a 4x4 grid. A token is dropped along a column and said
     * 200 - OK. On success
     * 400 - Malformed request
 
-### GET /drop_token/{gameId} - Get the state of the game. ###
+### GET /drop_token/{gameId} - Get the state of the games. ###
   * output:
 ```
 { "players" : ["player1", "player2"], # Initial list of players.
   "state": "DONE/IN_PROGRESS",
   "winner": "player1", # in case of draw, winner will be null, state will be DONE.
-                       # in case game is still in progess, key should not exist.
+                       # in case games is still in progess, key should not exist.
 }
 ```
   * #### Status codes ####
@@ -97,7 +97,7 @@ Optional Query parameters: **GET /drop_token/{gameId}/moves?start=0&until=1**.
     * 400 - Malformed request
     * 404 - Game/moves not found.
 
-### DELETE /drop_token/{gameId}/{playerId} - Player quits from game. ###
+### DELETE /drop_token/{gameId}/{playerId} - Player quits from games. ###
  * #### Status codes ####
    * 202 - OK. On success
    * 404 - Game not found or player is not a part of it.
