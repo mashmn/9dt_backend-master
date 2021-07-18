@@ -7,6 +7,7 @@ public class GetMoveResponse {
     private String type;
     private String player;
     private Integer column;
+    private Integer row;
 
     public GetMoveResponse() {}
 
@@ -14,6 +15,7 @@ public class GetMoveResponse {
         this.type = Preconditions.checkNotNull(builder.type);
         this.player = Preconditions.checkNotNull(builder.player);
         this.column = builder.column;
+        this.row = builder.row;
     }
 
 
@@ -29,10 +31,15 @@ public class GetMoveResponse {
         return Optional.ofNullable(column);
     }
 
+    public Optional<Integer> getRow() {
+        return Optional.ofNullable(row);
+    }
+
     public static class Builder {
         private String type;
         private String player;
         private Integer column;
+        private Integer row;
 
         public Builder type(String type) {
             this.type = type;
@@ -49,10 +56,16 @@ public class GetMoveResponse {
             return this;
         }
 
+        public Builder row(Integer row) {
+            this.row = row;
+            return this;
+        }
+
         public Builder fromPrototype(GetMoveResponse prototype) {
             type = prototype.type;
             player = prototype.player;
             column = prototype.column;
+            row = prototype.row;
             return this;
         }
 

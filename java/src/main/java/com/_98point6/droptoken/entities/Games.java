@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name="GAMES")
 @Access(value=AccessType.FIELD)
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 @NamedQueries({
         @NamedQuery(
                 name = "GAMES.getAllGames",
@@ -24,7 +25,7 @@ import java.util.Objects;
                 query = "SELECT p.playerOneId, p.playerTwoId, p.winner, p.state FROM Games p WHERE p.gameId = :gameId"
         )
 })
-public class Games {
+public class Games implements Serializable {
     public Games() {
     }
 
@@ -53,7 +54,7 @@ public class Games {
     @Column(name="state")
     private String state;
 
-    @Column(name="winner")
+    @Column(name="winner", nullable = true)
     private String winner;
 
     public String getGameId() {

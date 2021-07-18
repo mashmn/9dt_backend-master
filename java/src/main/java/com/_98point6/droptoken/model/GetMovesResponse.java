@@ -1,5 +1,6 @@
 package com._98point6.droptoken.model;
 
+import com._98point6.droptoken.entities.Moves;
 import com.google.common.base.Preconditions;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
  *
  */
 public class GetMovesResponse {
-    private List<GetMoveResponse> moves;
+    private List<Moves> moves;
 
     public GetMovesResponse() {}
 
@@ -16,14 +17,14 @@ public class GetMovesResponse {
         this.moves = Preconditions.checkNotNull(builder.moves);
     }
 
-    public List<GetMoveResponse> getMoves() {
+    public List<Moves> getMoves() {
         return moves;
     }
 
     public static class Builder {
-        private List<GetMoveResponse> moves;
+        private List<Moves> moves;
 
-        public Builder moves(List<GetMoveResponse> moves) {
+        public Builder moves(List<Moves> moves) {
             this.moves = moves;
             return this;
         }

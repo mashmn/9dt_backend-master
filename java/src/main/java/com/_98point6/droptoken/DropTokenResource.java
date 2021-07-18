@@ -1,6 +1,9 @@
 package com._98point6.droptoken;
 
 import com._98point6.droptoken.dao.GameDAO;
+import com._98point6.droptoken.dao.MoveDAO;
+import com._98point6.droptoken.entities.Games;
+import com._98point6.droptoken.entities.Moves;
 import com._98point6.droptoken.model.CreateGameRequest;
 import com._98point6.droptoken.model.CreateGameResponse;
 import com._98point6.droptoken.model.GameStatusResponse;
@@ -34,9 +37,11 @@ import java.util.List;
 public class DropTokenResource {
     private static final Logger logger = LoggerFactory.getLogger(DropTokenResource.class);
     private final GameDAO gameDAO;
+    private final MoveDAO moveDAO;
 
-    public DropTokenResource(GameDAO gameDAO) {
+    public DropTokenResource(GameDAO gameDAO, MoveDAO moveDAO) {
         this.gameDAO = gameDAO;
+        this.moveDAO = moveDAO;
     }
 
     @GET
@@ -58,31 +63,23 @@ public class DropTokenResource {
     @UnitOfWork
     public Response getGameStatus(@PathParam("id") String gameId) {
         logger.info("gameId = {}", gameId);
-
-        List<Object> getGameStatus = gameDAO.getGameStatus(gameId);
-        Iterator<Object> getGameStatusIterator = getGameStatus.iterator();
-        List<String> players = new ArrayList<>();
         String winner = null;
         String state = null;
+        List<String> players = new ArrayList<>();
 
-        while(getGameStatusIterator.hasNext()) {
-            Object[]  getGameStatusObj = (Object[]) getGameStatusIterator.next();
+        List<Games> getGameStatus = gameDAO.getGameStatus(gameId);
+        for (Object gameStatus : getGameStatus) {
+            Object[] getGameStatusObj = (Object[]) gameStatus;
             players.add(String.valueOf(getGameStatusObj[0]));
             players.add(String.valueOf(getGameStatusObj[1]));
             winner = String.valueOf(getGameStatusObj[2]);
             state = String.valueOf(getGameStatusObj[3]);
-//           Optional.ofNullable(obj[0]).map(Objects::toString)
-//           Integer state = Integer.parseInt(String.valueOf(obj[1]));
         }
-
-        logger.info("state = {}", players);
-        logger.info("state = {}", state);
-        logger.info("winner = {}", winner);
 
         GameStatusResponse.Builder gameStatusResponse = new GameStatusResponse.Builder()
                 .players(players)
                 .state(state);
-        
+
         if(winner !="null") {
             gameStatusResponse.winner(winner);
         }
@@ -104,16 +101,41 @@ public class DropTokenResource {
     }
     @Path("/{id}/moves")
     @GET
+    @UnitOfWork
     public Response getMoves(@PathParam("id") String gameId, @QueryParam("start") Integer start, @QueryParam("until") Integer until) {
         logger.info("gameId={}, start={}, until={}", gameId, start, until);
-        return Response.ok(new GetMovesResponse()).build();
+        logger.info("moves={}", moveDAO.getMoves(gameId, start, until));
+        GetMovesResponse.Builder getMovesResponse = new GetMovesResponse.Builder()
+            .moves(moveDAO.getMoves(gameId, start, until));
+        return Response.ok(getMovesResponse.build()).build();
     }
 
     @Path("/{id}/moves/{moveId}")
     @GET
-    public Response getMove(@PathParam("id") String gameId, @PathParam("moveId") Integer moveId) {
+    @UnitOfWork
+    public Response getMove(@PathParam("id") String gameId, @PathParam("moveId") String moveId) {
         logger.info("gameId={}, moveId={}", gameId, moveId);
-        return Response.ok(new GetMoveResponse()).build();
+        String type = null;
+        String playerId = null;
+        Integer column = null;
+        Integer row = null;
+
+        List<Moves> getMoveIdList = moveDAO.getMove(gameId, moveId);
+
+        for (Object getMoveIdObj : getMoveIdList) {
+            Object[] obj = (Object[]) getMoveIdObj;
+            type = String.valueOf(obj[0]);
+            playerId = String.valueOf(obj[1]);
+            column = Integer.valueOf(String.valueOf(obj[2]));
+            row = Integer.valueOf(String.valueOf(obj[3]));
+        }
+
+        GetMoveResponse.Builder getMoveResponse = new GetMoveResponse.Builder()
+                .type(type)
+                .player(playerId)
+                .column(column)
+                .row(row);
+        return Response.ok(getMoveResponse.build()).build();
     }
 
 }

@@ -1,7 +1,9 @@
 package com._98point6.droptoken;
 
 import com._98point6.droptoken.dao.GameDAO;
+import com._98point6.droptoken.dao.MoveDAO;
 import com._98point6.droptoken.entities.Games;
+import com._98point6.droptoken.entities.Moves;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -28,7 +30,7 @@ public class DropTokenApplication extends Application<DropTokenConfiguration> {
         }
 
         private final HibernateBundle<DropTokenConfiguration> hibernate = new HibernateBundle<DropTokenConfiguration>(
-                Games.class
+                Games.class, Moves.class
         ) {
             public DataSourceFactory getDataSourceFactory(DropTokenConfiguration configuration) {
                 return configuration.getDataSourceFactory();
@@ -53,11 +55,10 @@ public class DropTokenApplication extends Application<DropTokenConfiguration> {
             environment.jersey().register(new JsonProcessingExceptionMapper());
             environment.jersey().register(new EarlyEofExceptionMapper());
 
-//            final DropTokenResource resource = new DropTokenResource();
-//            environment.jersey().register(resource);
+            final MoveDAO moveDAO = new MoveDAO(hibernate.getSessionFactory());
+            final GameDAO gamedao = new GameDAO(hibernate.getSessionFactory());
 
-            final GameDAO dao = new GameDAO(hibernate.getSessionFactory());
-            environment.jersey().register(new DropTokenResource(dao));
+            environment.jersey().register(new DropTokenResource(gamedao, moveDAO));
 
         }
 

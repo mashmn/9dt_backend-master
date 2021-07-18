@@ -17,13 +17,13 @@ public class GameDAO extends AbstractDAO<Games> {
         super(factory);
     }
 
-    public Games create(Games games) {
-        return persist(games);
-    }
-
-    public List<Games> getAllGames() {
-        return list(namedQuery("GAMES.getAllGames"));
-    }
+//    public Games create(Games games) {
+//        return persist(games);
+//    }
+//
+//    public List<Games> getAllGames() {
+//        return list(namedQuery("GAMES.getAllGames"));
+//    }
 
     public List<Games> getGames() {
         List<Games> games = list(namedQuery("GAMES.getGames"));
@@ -31,12 +31,12 @@ public class GameDAO extends AbstractDAO<Games> {
         return games;
     }
 
-    public List<Object> getGameStatus(String gameId) {
+    public List<Games> getGameStatus(String gameId) {
         Query query = namedQuery("GAMES.getGameStatus");
 //        query.setParameter("gameId", gameId);
 //        Games getGameStatus = (Games) query.list().get(0);
         query.setString("gameId", gameId);
         logger.info("games={}", query.list().get(0));
-        return (List<Object>) query.list();
+        return query.list();
     }
 }
