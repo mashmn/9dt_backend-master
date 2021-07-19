@@ -16,16 +16,18 @@ public class MoveDAO extends AbstractDAO<Moves> {
         super(factory);
     }
 
-    public List<Moves> getMovesX() {
-        return list(namedQuery("Moves.getMovesX"));
+    public List<Moves> getMoves(String gameId) {
+        Query query = namedQuery("Moves.getMovesByGameId");
+            query.setParameter("gameId", gameId);
+        return query.list();
     }
 
     public List<Moves> getMoves(String gameId, Integer start, Integer until) {
-        Query query = namedQuery("Moves.getMoves");
+        Query query = namedQuery("Moves.getMovesFromStartToUntil");
         query.setParameter("gameId", gameId)
                 .setInteger("start", start)
                 .setInteger("until", until);
-        logger.info("test={}", query.list().get(0));
+        logger.info("moves={}", query.list().get(0));
         return query.list();
     }
 
@@ -33,7 +35,7 @@ public class MoveDAO extends AbstractDAO<Moves> {
         Query query = namedQuery("Moves.getMove");
         query.setParameter("gameId", gameId)
             .setParameter("moveId",  moveId);
-        logger.info("test={}", query.list().get(0));
+        logger.info("moves={}", query.list().get(0));
         return query.list();
     }
 }

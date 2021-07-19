@@ -17,10 +17,10 @@ public class GameDAO extends AbstractDAO<Games> {
         super(factory);
     }
 
-//    public Games create(Games games) {
-//        return persist(games);
-//    }
-//
+    public Games create(Games games) {
+        return persist(games);
+    }
+
 //    public List<Games> getAllGames() {
 //        return list(namedQuery("GAMES.getAllGames"));
 //    }

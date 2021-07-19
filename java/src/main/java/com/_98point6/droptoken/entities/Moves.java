@@ -10,14 +10,20 @@ import java.util.Objects;
 @Access(value=AccessType.FIELD)
 @NamedQueries({
         @NamedQuery(
-                name = "Moves.getMoves",
-                query = "SELECT p.type, p.playerId, p.columns, p.rows " +
+                name = "Moves.getMovesByGameId",
+                query = "SELECT p.type, p.playerId, p.column, p.row " +
+                        "FROM Moves p WHERE " +
+                        "p.gameId = :gameId"
+        ),
+        @NamedQuery(
+                name = "Moves.getMovesFromStartToUntil",
+                query = "SELECT p.type, p.playerId, p.column, p.row " +
                         "FROM Moves p WHERE " +
                         "p.gameId = :gameId AND p.seq BETWEEN :start and :until"
         ),
         @NamedQuery(
                 name = "Moves.getMove",
-                query = "SELECT p.type, p.playerId, p.columns, p.rows " +
+                query = "SELECT p.type, p.playerId, p.column, p.row " +
                         "FROM Moves p " +
                         "WHERE p.gameId = :gameId AND p.moveId = :moveId"
         )
@@ -27,13 +33,13 @@ public class Moves implements Serializable {
 
     }
 
-    public Moves(String moveId, String gameId, String playerId, Integer seq, Integer columns, Integer rows, String type, Date movedOn) {
+    public Moves(String moveId, String gameId, String playerId, Integer seq, Integer column, Integer row, String type, Date movedOn) {
         this.moveId = moveId;
         this.playerId = playerId;
         this.gameId = gameId;
         this.seq = seq;
-        this.columns = columns;
-        this.rows = rows;
+        this.column = column;
+        this.row = row;
         this.type = type;
         this.movedOn = movedOn;
     }
@@ -51,11 +57,11 @@ public class Moves implements Serializable {
     @Column(name="seq")
     public Integer seq;
 
-    @Column(name="columns")
-    public Integer columns;
+    @Column(name="column")
+    public Integer column;
 
-    @Column(name="rows")
-    public Integer rows;
+    @Column(name="row")
+    public Integer row;
 
     @Column(name="type")
     public String type;
@@ -90,20 +96,20 @@ public class Moves implements Serializable {
         this.gameId = gameId;
     }
 
-    public Integer getColumns() {
-        return columns;
+    public Integer getColumn() {
+        return column;
     }
 
-    public void setColumns(Integer columns) {
-        this.columns = columns;
+    public void setColumn(Integer column) {
+        this.column = column;
     }
 
-    public Integer getRows() {
-        return rows;
+    public Integer getRow() {
+        return row;
     }
 
-    public void setRows(Integer rows) {
-        this.rows = rows;
+    public void setRow(Integer row) {
+        this.row = row;
     }
 
     public String getType() {
@@ -136,14 +142,14 @@ public class Moves implements Serializable {
         return Objects.equals(this.moveId, that.moveId) &&
                 Objects.equals(this.gameId, that.gameId) &&
                 Objects.equals(this.playerId, that.playerId) &&
-                Objects.equals(this.columns, that.columns) &&
-                Objects.equals(this.rows, that.rows) &&
+                Objects.equals(this.column, that.column) &&
+                Objects.equals(this.row, that.row) &&
                 Objects.equals(this.type, that.type) &&
                 Objects.equals(this.movedOn, that.movedOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameId, moveId, playerId, columns, rows, type, movedOn);
+        return Objects.hash(gameId, moveId, playerId, column, row, type, movedOn);
     }
 }

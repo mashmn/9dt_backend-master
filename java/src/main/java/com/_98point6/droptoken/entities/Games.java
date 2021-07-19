@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -29,12 +30,16 @@ public class Games implements Serializable {
     public Games() {
     }
 
-    public Games(String playerOneId, String playerTwoId, String nextPlayer, String state, String winner) {
+    public Games(String gameId, String playerOneId, String playerTwoId, Integer columns, Integer rows, String state,
+                 String winner, Date createdOn) {
+        this.gameId = gameId;
         this.playerOneId = playerOneId;
         this.playerTwoId = playerTwoId;
-        this.nextPlayer = nextPlayer;
+        this.columns = columns;
+        this.rows = rows;
         this.state = state;
         this.winner = winner;
+        this.createdOn = createdOn;
     }
 
     @Id
@@ -48,14 +53,20 @@ public class Games implements Serializable {
     @Column(name="player_two_id")
     private String playerTwoId;
 
-    @Column(name="next_player")
-    private String nextPlayer;
+    @Column(name="columns")
+    private Integer columns;
+
+    @Column(name="rows")
+    private Integer rows;
 
     @Column(name="state")
     private String state;
 
     @Column(name="winner", nullable = true)
     private String winner;
+
+    @Column(name="created_on")
+    private Date createdOn;
 
     public String getGameId() {
         return gameId;
@@ -75,11 +86,17 @@ public class Games implements Serializable {
     public void setPlayerTwoId(String playerTwoId) {
         this.playerTwoId = playerTwoId;
     }
-    public String getNextPlayer() {
-        return nextPlayer;
+    public Integer getColumns() {
+        return columns;
     }
-    public void setNextPlayer(String nextPlayer) {
-        this.nextPlayer = nextPlayer;
+    public void setColumns(Integer columns) {
+        this.columns = columns;
+    }
+    public Integer getRows() {
+        return rows;
+    }
+    public void setRows(Integer rows) {
+        this.rows = rows;
     }
     public String getState() {
         return state;
@@ -92,6 +109,12 @@ public class Games implements Serializable {
     }
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
     @Override
     public boolean equals(Object o) {
@@ -107,14 +130,16 @@ public class Games implements Serializable {
         return Objects.equals(this.gameId, that.gameId) &&
                 Objects.equals(this.playerOneId, that.playerOneId) &&
                 Objects.equals(this.playerTwoId, that.playerTwoId) &&
-                Objects.equals(this.nextPlayer, that.nextPlayer) &&
+                Objects.equals(this.columns, that.columns) &&
+                Objects.equals(this.rows, that.rows) &&
                 Objects.equals(this.state, that.state) &&
-                Objects.equals(this.winner, that.winner);
+                Objects.equals(this.winner, that.winner) &&
+                Objects.equals(this.createdOn, that.createdOn) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameId, playerOneId, playerTwoId, nextPlayer, state, winner);
+        return Objects.hash(gameId, playerOneId, playerTwoId, columns, rows, state, winner, createdOn);
     }
 //    @Override
 //    public String toString() {

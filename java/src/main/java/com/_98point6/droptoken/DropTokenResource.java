@@ -16,18 +16,10 @@ import io.dropwizard.hibernate.UnitOfWork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -53,9 +45,26 @@ public class DropTokenResource {
     }
 
     @POST
+    @UnitOfWork
     public Response createNewGame(CreateGameRequest request) {
-        logger.info("request={}", request);
-        return Response.ok(new CreateGameResponse()).build();
+        try {
+            logger.info("request={}", request);
+            Games games = new Games();
+            games.setPlayerOneId(request.getPlayers().get(0));
+            games.setPlayerOneId(request.getPlayers().get(1));
+            games.setColumns(request.getColumns());
+            games.setRows(request.getRows());
+            games.setCreatedOn(new Date());
+
+            gameDAO.create(games);
+
+            CreateGameResponse.Builder createGameRequest = new CreateGameResponse.Builder();
+            createGameRequest.gameId("some_string_token");
+            return Response.ok(createGameRequest.build()).build();
+        } catch (Exception e) {
+            logger.info("exception={}", e.toString());
+            return Response.status(400).entity("Malformed request").build();
+        }
     }
 
     @Path("/{id}")
@@ -88,6 +97,7 @@ public class DropTokenResource {
 
     @Path("/{id}/{playerId}")
     @POST
+    @UnitOfWork
     public Response postMove(@PathParam("id")String gameId, @PathParam("playerId") String playerId, PostMoveRequest request) {
         logger.info("gameId={}, playerId={}, move={}", gameId, playerId, request);
         return Response.ok(new PostMoveResponse()).build();
@@ -95,19 +105,34 @@ public class DropTokenResource {
 
     @Path("/{id}/{playerId}")
     @DELETE
+    @UnitOfWork
     public Response playerQuit(@PathParam("id")String gameId, @PathParam("playerId") String playerId) {
         logger.info("gameId={}, playerId={}", gameId, playerId);
         return Response.status(202).build();
     }
+
     @Path("/{id}/moves")
     @GET
     @UnitOfWork
-    public Response getMoves(@PathParam("id") String gameId, @QueryParam("start") Integer start, @QueryParam("until") Integer until) {
-        logger.info("gameId={}, start={}, until={}", gameId, start, until);
-        logger.info("moves={}", moveDAO.getMoves(gameId, start, until));
-        GetMovesResponse.Builder getMovesResponse = new GetMovesResponse.Builder()
-            .moves(moveDAO.getMoves(gameId, start, until));
-        return Response.ok(getMovesResponse.build()).build();
+    public Response getMoves(
+            @PathParam("id") String gameId,
+            @DefaultValue("1000") @QueryParam("start") Integer start,
+            @DefaultValue("999") @QueryParam("until") Integer until) {
+        try {
+            if (start<until) {
+                logger.info("gameId={}, start={}, until={}", gameId, start, until);
+                GetMovesResponse.Builder getMovesResponse = new GetMovesResponse.Builder()
+                        .moves(moveDAO.getMoves(gameId, start, until));
+                return Response.ok(getMovesResponse.build()).build();
+            } else if ( String.valueOf(start).equals("1000") && String.valueOf(until).equals("999") ) {
+                GetMovesResponse.Builder getMovesResponse = new GetMovesResponse.Builder()
+                        .moves(moveDAO.getMoves(gameId));
+                return Response.ok(getMovesResponse.build()).build();
+            } else return Response.status(404).entity("Game/moves not found").build();
+        } catch (Exception e) {
+            logger.info("exception={}", e.toString());
+            return Response.status(400).entity("Malformed request").build();
+        }
     }
 
     @Path("/{id}/moves/{moveId}")
