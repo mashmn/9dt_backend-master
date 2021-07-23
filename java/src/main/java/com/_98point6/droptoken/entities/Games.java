@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name="GAMES")
@@ -24,13 +25,17 @@ import java.util.Objects;
         @NamedQuery(
                 name = "GAMES.getGameStatus",
                 query = "SELECT p.playerOneId, p.playerTwoId, p.winner, p.state FROM Games p WHERE p.gameId = :gameId"
+        ),
+        @NamedQuery(
+                name = "GAMES.getGameDetailsByGameId",
+                query = "SELECT p.playerOneId, p.playerTwoId, p.columns, p.rows, p.state, p.winner FROM Games p WHERE p.gameId = :gameId"
         )
 })
 public class Games implements Serializable {
     public Games() {
     }
 
-    public Games(String gameId, String playerOneId, String playerTwoId, Integer columns, Integer rows, String state,
+    public Games(UUID gameId, String playerOneId, String playerTwoId, Integer columns, Integer rows, String state,
                  String winner, Date createdOn) {
         this.gameId = gameId;
         this.playerOneId = playerOneId;
@@ -45,7 +50,7 @@ public class Games implements Serializable {
     @Id
     @Column(name="game_id", unique = true, nullable=false)
 //    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private String gameId;
+    private UUID gameId;
 
     @Column(name="player_one_id")
     private String playerOneId;
@@ -68,10 +73,10 @@ public class Games implements Serializable {
     @Column(name="created_on")
     private Date createdOn;
 
-    public String getGameId() {
+    public UUID getGameId() {
         return gameId;
     }
-    public void setGameId(String gameId) {
+    public void setGameId(UUID gameId) {
         this.gameId = gameId;
     }
     public String getPlayerOneId() {

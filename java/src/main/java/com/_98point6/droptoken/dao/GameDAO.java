@@ -7,8 +7,9 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class GameDAO extends AbstractDAO<Games> {
     private static final Logger logger = LoggerFactory.getLogger(GameDAO.class);
@@ -20,6 +21,18 @@ public class GameDAO extends AbstractDAO<Games> {
     public Games create(Games games) {
         return persist(games);
     }
+
+    public void update(Games games) {
+        update(games);
+    }
+
+    public void merge(Games games) {
+        merge(games);
+    }
+
+//    public Games find(Long id) {
+//        return (Games) super.get(id);
+//    }
 
 //    public List<Games> getAllGames() {
 //        return list(namedQuery("GAMES.getAllGames"));
@@ -33,10 +46,17 @@ public class GameDAO extends AbstractDAO<Games> {
 
     public List<Games> getGameStatus(String gameId) {
         Query query = namedQuery("GAMES.getGameStatus");
-//        query.setParameter("gameId", gameId);
-//        Games getGameStatus = (Games) query.list().get(0);
-        query.setString("gameId", gameId);
-        logger.info("games={}", query.list().get(0));
+        query.setParameter("gameId", UUID.fromString(gameId));
         return query.list();
+    }
+
+    public List<Games> getGameDetailsByGameId(String gameId) {
+        Query query = namedQuery("GAMES.getGameDetailsByGameId");
+        query.setParameter("gameId", UUID.fromString(gameId));
+        return query.list();
+    }
+
+    public Games getGameByGameId(String gameId) {
+        return get(UUID.fromString(gameId));
     }
 }

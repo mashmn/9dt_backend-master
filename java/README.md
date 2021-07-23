@@ -10,3 +10,19 @@ Feel free to change **everything**.
 ```
  curl --header "Content-type: Application/json" -X POST http://localhost:8080/drop_token -d'{ "players":["p1", "p2"], "rows":4, "columns":4}'
 ```
+## Docker
+
+### Postgres Database
+Build Docker image and create container from the 9dt_backend_master folder:
+```
+docker build -t droptoken-db ./
+```
+
+```
+docker run -d --name droptoken-db-container -p 5432:5432 droptoken-db
+```
+
+To access the postgres container created above, run the following:
+`
+docker exec -it droptoken-db-container psql -h localhost -p 5432 -U postgres -d postgres
+`

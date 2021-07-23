@@ -4,25 +4,32 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
-@Table(name="Moves")
+@Table(name="MOVES_TABLE")
 @Access(value=AccessType.FIELD)
 @NamedQueries({
         @NamedQuery(
-                name = "Moves.getMovesByGameId",
+                name = "MOVES.getAllMovesByGameId",
                 query = "SELECT p.type, p.playerId, p.column, p.row " +
-                        "FROM Moves p WHERE " +
-                        "p.gameId = :gameId"
+                        "FROM Moves p " +
+                        "WHERE p.gameId = :gameId"
         ),
         @NamedQuery(
-                name = "Moves.getMovesFromStartToUntil",
+                name = "MOVES.getMovesByGameId",
                 query = "SELECT p.type, p.playerId, p.column, p.row " +
-                        "FROM Moves p WHERE " +
-                        "p.gameId = :gameId AND p.seq BETWEEN :start and :until"
+                        "FROM Moves p " +
+                        "WHERE p.gameId = :gameId"
         ),
         @NamedQuery(
-                name = "Moves.getMove",
+                name = "MOVES.getMovesFromStartToUntil",
+                query = "SELECT p.type, p.playerId, p.column, p.row " +
+                        "FROM Moves p " +
+                        "WHERE p.gameId = :gameId AND p.seq BETWEEN :start and :until"
+        ),
+        @NamedQuery(
+                name = "MOVES.getMove",
                 query = "SELECT p.type, p.playerId, p.column, p.row " +
                         "FROM Moves p " +
                         "WHERE p.gameId = :gameId AND p.moveId = :moveId"
@@ -33,7 +40,7 @@ public class Moves implements Serializable {
 
     }
 
-    public Moves(String moveId, String gameId, String playerId, Integer seq, Integer column, Integer row, String type, Date movedOn) {
+    public Moves(UUID moveId, UUID gameId, String playerId, Integer seq, Integer column, Integer row, String type, Date movedOn) {
         this.moveId = moveId;
         this.playerId = playerId;
         this.gameId = gameId;
@@ -46,84 +53,74 @@ public class Moves implements Serializable {
 
     @Id
     @Column(name="move_id", unique = true, nullable = false)
-    public String moveId;
+    public UUID moveId;
 
     @Column(name="player_id", nullable = false)
     public String playerId;
 
     @Column(name="game_id", nullable = false)
-    public String gameId;
+    public UUID gameId;
 
-    @Column(name="seq")
+    @Column(name="move_seq")
     public Integer seq;
 
-    @Column(name="column")
+    @Column(name="column_move")
     public Integer column;
 
-    @Column(name="row")
+    @Column(name="row_move")
     public Integer row;
 
-    @Column(name="type")
+    @Column(name="move_type")
     public String type;
 
     @Column(name="moved_on")
     public Date movedOn;
 
-    public Integer start;
-    public Integer until;
-
-    public String getMoveId() {
+    public UUID getMoveId() {
         return moveId;
     }
-
-    public void setMoveId(String moveId) {
+    public void setMoveId(UUID moveId) {
         this.moveId = moveId;
     }
-
     public String getPlayerId() {
         return playerId;
     }
-
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
     }
-
-    public String getGameId() {
+    public UUID getGameId() {
         return gameId;
     }
-
-    public void setGameId(String gameId) {
+    public void setGameId(UUID gameId) {
         this.gameId = gameId;
     }
-
+    public Integer getSeq() {
+        return seq;
+    }
+    public void setSeq(Integer seq) {
+        this.seq = seq;
+    }
     public Integer getColumn() {
         return column;
     }
-
     public void setColumn(Integer column) {
         this.column = column;
     }
-
     public Integer getRow() {
         return row;
     }
-
     public void setRow(Integer row) {
         this.row = row;
     }
-
     public String getType() {
         return type;
     }
-
     public void setType(String type) {
         this.type = type;
     }
-
     public Date getMovedOn() {
         return movedOn;
     }
-
     public void setMovedOn(Date movedOn) {
         this.movedOn = movedOn;
     }
@@ -140,8 +137,9 @@ public class Moves implements Serializable {
         final Moves that = (Moves) o;
 
         return Objects.equals(this.moveId, that.moveId) &&
-                Objects.equals(this.gameId, that.gameId) &&
                 Objects.equals(this.playerId, that.playerId) &&
+                Objects.equals(this.gameId, that.gameId) &&
+                Objects.equals(this.seq, that.seq) &&
                 Objects.equals(this.column, that.column) &&
                 Objects.equals(this.row, that.row) &&
                 Objects.equals(this.type, that.type) &&
@@ -150,6 +148,6 @@ public class Moves implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameId, moveId, playerId, column, row, type, movedOn);
+        return Objects.hash(moveId, playerId, gameId, seq, column, row, type, movedOn);
     }
 }
