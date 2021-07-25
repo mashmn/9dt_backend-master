@@ -1,24 +1,25 @@
 package com._98point6.droptoken.core;
 
-import com._98point6.droptoken.DropTokenResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameBoard {
+public class GameBoard implements GameBoardConstants {
     private static final Logger logger = LoggerFactory.getLogger(GameBoard.class);
     int rows=0;
     int columns=0;
     int currentRow;
     int currentColumn;
     int turn=1;
-    int PLAYER_ONE = 101;
-    int PLAYER_TWO = 102;
-    int DRAW = 3;
-    int BOARD_FULL = 4;
-    int TURN_SUCCESSFUL = 5;
-    int INVALID_MOVE = 6;
-    int IN_PROGRESS = 7;
     int[][] Board;
+
+//    int PLAYER_ONE = 1;
+//    int PLAYER_TWO = 2;
+//    int DRAW = 3;
+//    int BOARD_FULL = 4;
+//    int TURN_SUCCESSFUL = 5;
+//    int INVALID_MOVE = 6;
+//    int IN_PROGRESS = 7;
+
 
     public void initializeBoard(int rows, int columns) {
         int[][] Board = new int[rows][columns];

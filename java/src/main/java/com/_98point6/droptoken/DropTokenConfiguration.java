@@ -41,5 +41,4 @@ public class DropTokenConfiguration extends Configuration {
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.database = dataSourceFactory;
     }
-
 }

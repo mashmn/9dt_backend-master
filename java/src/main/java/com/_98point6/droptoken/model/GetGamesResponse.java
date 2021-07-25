@@ -21,7 +21,6 @@ public class GetGamesResponse {
         return games;
     }
 
-
     public static class Builder {
         private List<Games> games;
 

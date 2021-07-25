@@ -1,0 +1,6 @@
+FROM java:8-jre
+EXPOSE 8080 8081
+COPY ./target/9dt-backend-1.0-SNAPSHOT.jar /home/9dt-backend-1.0-SNAPSHOT.jar
+COPY ./src/main/resources/local.yml /home/local.yml
+CMD ["java","-jar","/home/9dt-backend-1.0-SNAPSHOT.jar","server","/home/local.yml"]
+# CMD java -jar /home/9dt-backend-1.0-SNAPSHOT.jar server /home/local.yml

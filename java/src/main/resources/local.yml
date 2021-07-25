@@ -9,9 +9,9 @@ database:
   user: postgres
   # the password
   password: droptoken-password
-  # the JDBC URL
+  # the JDBC URL - add the subnetwork ip address
 #  url: jdbc:postgresql://localhost:5432/droptoken-db
-  url: jdbc:postgresql://172.17.0.2:5432/droptoken-db
+  url: jdbc:postgresql://droptoken-db-cont:5432/droptoken-db
   # any properties specific to your JDBC driver:
   properties:
     charSet: UTF-8

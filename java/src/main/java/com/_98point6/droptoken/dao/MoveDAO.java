@@ -2,6 +2,7 @@ package com._98point6.droptoken.dao;
 
 import com._98point6.droptoken.entities.Games;
 import com._98point6.droptoken.entities.Moves;
+import com._98point6.droptoken.model.GetMoveResponse;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -36,13 +37,14 @@ public class MoveDAO extends AbstractDAO<Moves> {
 //        return criteria.list();
     }
 
-    public List<Moves> getMoves(String gameId) {
+    public List<GetMoveResponse> getMoves(String gameId) {
         Query query = namedQuery("MOVES.getMovesByGameId");
             query.setParameter("gameId", UUID.fromString(gameId));
+//        logger.info("moves={}", query.list().get(0));
         return query.list();
     }
 
-    public List<Moves> getMoves(String gameId, Integer start, Integer until) {
+    public List<GetMoveResponse> getMoves(String gameId, Integer start, Integer until) {
         Query query = namedQuery("MOVES.getMovesFromStartToUntil");
         query.setParameter("gameId", UUID.fromString(gameId))
                 .setInteger("start", start)

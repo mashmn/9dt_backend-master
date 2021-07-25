@@ -2,8 +2,8 @@
 -- PostgreSQL "Drop Token" database.
 --
 
---
-CREATE TABLE MOVES_TABLE (
+-- Create below tables in droptoken-db database
+CREATE TABLE IF NOT EXISTS MOVES_TABLE (
    move_id     UUID           PRIMARY KEY    NOT NULL,
    player_id   varchar(20)    NOT NULL,
    game_id     UUID           NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE MOVES_TABLE (
    moved_on    timestamp
 );
 
-CREATE TABLE GAMES (
+CREATE TABLE IF NOT EXISTS GAMES (
    game_id        UUID           PRIMARY KEY    NOT NULL,
    player_one_id  varchar(20),
    player_two_id  varchar(20),  
@@ -25,8 +25,8 @@ CREATE TABLE GAMES (
    created_on     timestamp
 );
 
-CREATE TABLE PLAYERS (
-   player_id    varchar(20)    NOT NULL,
-   game_id      varchar(20) 
-);
+-- CREATE TABLE IF NOT EXISTS PLAYERS (
+--    player_id    varchar(20)    NOT NULL,
+--    game_id      varchar(20) 
+-- );
 

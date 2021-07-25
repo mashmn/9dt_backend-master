@@ -25,6 +25,7 @@ import java.util.UUID;
         @NamedQuery(
                 name = "MOVES.getMovesFromStartToUntil",
                 query = "SELECT p.type, p.playerId, p.column, p.row " +
+//                        "ROW_NUMBER () OVER (ORDER BY p.movedOn) " +
                         "FROM Moves p " +
                         "WHERE p.gameId = :gameId AND p.seq BETWEEN :start and :until"
         ),

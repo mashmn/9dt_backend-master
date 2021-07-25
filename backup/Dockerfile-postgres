@@ -1,0 +1,5 @@
+FROM postgres
+MAINTAINER bornegod
+ENV POSTGRES_PASSWORD droptoken-password
+ENV POSTGRES_DB droptoken-db
+COPY ./java/droptoken.sql /docker-entrypoint-initdb.d/

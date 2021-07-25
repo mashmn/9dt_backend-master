@@ -1,13 +1,16 @@
 package com._98point6.droptoken.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import java.util.Optional;
 
 public class GetMoveResponse {
     private String type;
     private String player;
     private Integer column;
-    private Integer row;
+//    private Integer row;
 
     public GetMoveResponse() {}
 
@@ -15,9 +18,8 @@ public class GetMoveResponse {
         this.type = Preconditions.checkNotNull(builder.type);
         this.player = Preconditions.checkNotNull(builder.player);
         this.column = builder.column;
-        this.row = builder.row;
+//        this.row = builder.row;
     }
-
 
     public String getType() {
         return type;
@@ -31,15 +33,24 @@ public class GetMoveResponse {
         return Optional.ofNullable(column);
     }
 
-    public Optional<Integer> getRow() {
-        return Optional.ofNullable(row);
+//    public Optional<Integer> getRow() {
+//        return Optional.ofNullable(row);
+//    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("type", type)
+                .append("player", player)
+                .append("column", column)
+                .toString();
     }
 
     public static class Builder {
         private String type;
         private String player;
         private Integer column;
-        private Integer row;
+//        private Integer row;
 
         public Builder type(String type) {
             this.type = type;
@@ -56,16 +67,16 @@ public class GetMoveResponse {
             return this;
         }
 
-        public Builder row(Integer row) {
-            this.row = row;
-            return this;
-        }
+//        public Builder row(Integer row) {
+//            this.row = row;
+//            return this;
+//        }
 
         public Builder fromPrototype(GetMoveResponse prototype) {
             type = prototype.type;
             player = prototype.player;
             column = prototype.column;
-            row = prototype.row;
+//            row = prototype.row;
             return this;
         }
 
