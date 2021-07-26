@@ -8,6 +8,12 @@ public interface GameBoardConstants {
     int TURN_SUCCESSFUL = 5;
     int INVALID_MOVE = 6;
     int IN_PROGRESS = 7;
+
+    Integer MIN_COLUMN = 4;
+    Integer MIN_ROW = 4;
+    Integer MAX_COLUMN = 8;
+    Integer MAX_ROW = 8;
+
     String IN_PROGRESS_STR = "IN_PROGRESS";
     String DONE_STR = "DONE";
     String DRAW_STR = "DRAW";

@@ -20,6 +20,7 @@ public class DropTokenExceptionMapper implements ExceptionMapper<Exception>  {
 //        logger.error("Unhandled exception.", e);
 //        return Response.status(500).build();
 //    }
+    @Override
     public Response toResponse(Exception e) {
         logger.error("Unhandled exception.", e);
         Response.Status responseCode = Response.Status.INTERNAL_SERVER_ERROR;
@@ -29,7 +30,8 @@ public class DropTokenExceptionMapper implements ExceptionMapper<Exception>  {
             message = e.getMessage();
         } else if (e instanceof BadRequestException) {
             responseCode = Response.Status.BAD_REQUEST;
-            message = e.getMessage();
+//            message = e.getMessage();
+            message = "Malformed input. Illegal move";
         } else if (e instanceof NotAllowedException) {
             responseCode = Response.Status.METHOD_NOT_ALLOWED;
             message = e.getMessage();
@@ -38,6 +40,9 @@ public class DropTokenExceptionMapper implements ExceptionMapper<Exception>  {
             int response = realException.getResponse().getStatus();
             responseCode = Response.Status.fromStatusCode(response);
         }
-        return Response.status(responseCode.getStatusCode()).type(MediaType.APPLICATION_JSON).entity(message).build();
+        return Response.status(responseCode.getStatusCode())
+                .type(MediaType.APPLICATION_JSON_TYPE)
+                .entity(message)
+                .build();
     }
 }

@@ -48,6 +48,11 @@ public class DropTokenResource implements GameBoardConstants {
         this.moveDAO = moveDAO;
     }
 
+    /**
+     * GET ALL GAMES
+     *
+     * @return all the game ids
+     */
     @GET
     @UnitOfWork
     public Response getGames() {
@@ -56,16 +61,24 @@ public class DropTokenResource implements GameBoardConstants {
         return Response.ok(getGamesResponse.build()).build();
     }
 
+    /**
+     * CREATE NEW GAME
+     * Construct a new game with newly generated gameId (UUID), the creation datetime
+     * and state of the game is set to "IN_PROGRESS".
+     *
+     * @param request the request should contain player ids, columns and rows.
+     * @return the gameId
+     * @throws NotAllowedException in case request is missing or malformed.
+     */
     @POST
     @UnitOfWork
     public Response createNewGame(CreateGameRequest request) {
 //        if (request == null) return Response.status(400).entity("Malformed request").build();
         try {
             logger.info("request={}", request);
-
             if(
-                    request.getColumns() < 4 || request.getRows() < 4 ||
-                    request.getColumns() > 10 || request.getRows() > 10
+                    request.getColumns() < MIN_COLUMN || request.getRows() < MIN_ROW ||
+                    request.getColumns() > MAX_COLUMN || request.getRows() > MAX_ROW
             ) {
                 return Response.status(404).entity(RESPONSE_CODE_400_1).build();
             }
@@ -91,6 +104,13 @@ public class DropTokenResource implements GameBoardConstants {
         }
     }
 
+    /**
+     * GET GAME STATUS OF A GAME ID
+     *
+     * @param gameId string UUID of a game
+     * @return players, state and winner (if not null)
+     * @throws IllegalArgumentException Invalid UUID string
+     */
     @Path("/{id}")
     @GET
     @UnitOfWork
@@ -132,11 +152,21 @@ public class DropTokenResource implements GameBoardConstants {
         }
     }
 
+    /**
+     * POST A MOVE
+     *
+     * @param gameId String gameId
+     * @param playerId String playerId
+     * @param request column for the move
+     * @return Concatenated string in this format: {gameId}/moves/{MoveId}
+     */
     @Path("/{id}/{playerId}")
     @POST
     @UnitOfWork
-    public Response postMove(@PathParam("id")String gameId, @PathParam("playerId") String playerId, PostMoveRequest request) {
+    public Response postMove(@PathParam("id")String gameId, @PathParam("playerId") String playerId, PostMoveRequest request) throws Exception {
+        try {
         logger.info("gameId={}, playerId={}, move={}", gameId, playerId, request);
+
         String playerOneId = null;
         String playerTwoId = null;
         Integer columns = 0;
@@ -154,18 +184,18 @@ public class DropTokenResource implements GameBoardConstants {
         int valid = 0;
         int result;
         boolean firstMove = true;
+        
 
-        try {
             Games foundGame = gameDAO.getGameByGameId(gameId);
             if(foundGame == null) return Response.status(404).entity(RESPONSE_CODE_404_2).build();
             playerOneId = String.valueOf(foundGame.getPlayerOneId());
             playerTwoId = String.valueOf(foundGame.getPlayerTwoId());
-            columns = (Integer) foundGame.getColumns();
-            rows = (Integer) foundGame.getRows();
+            columns = foundGame.getColumns();
+            rows = foundGame.getRows();
             state = String.valueOf(foundGame.getState());
             winner = String.valueOf(foundGame.getWinner());
 
-            if(request.getColumn() > columns-1 || state.equals("DONE")) return Response.status(400).entity(RESPONSE_CODE_400_1).build();
+            if(request.getColumn() > columns-1 || state.equals(DONE_STR)) return Response.status(400).entity(RESPONSE_CODE_400_1).build();
 
             if(!playerId.equals(playerOneId) && !playerId.equals(playerTwoId)) {
                 return Response.status(404).entity(RESPONSE_CODE_404_2).build();
@@ -190,9 +220,9 @@ public class DropTokenResource implements GameBoardConstants {
                         valid = gameBoard.dropTheToken(PLAYER_TWO,column);
                     }
                     seq++;
-                    logger.info("seq={}", seq);
-                    logger.info("previousPlayerValid={}", valid);
-                    logger.info("previousPlayerArrayVal={}, row={}, col={}", gameBoard.getBoard(row,column), gameBoard.getCurrentRow(), gameBoard.getCurrentColumn());
+//                    logger.info("seq={}", seq);
+//                    logger.info("previousPlayerValid={}", valid);
+//                    logger.info("previousPlayerArrayVal={}, row={}, col={}", gameBoard.getBoard(row,column), gameBoard.getCurrentRow(), gameBoard.getCurrentColumn());
                 }
                 if(previousPlayer.equals(playerId)) {
                     return Response.status(409).entity(RESPONSE_CODE_409).build();
@@ -257,7 +287,8 @@ public class DropTokenResource implements GameBoardConstants {
             return Response.ok(postMoveResponse.build()).build();
         } catch (Exception e) {
             logger.info("exception={}", e.toString());
-            return Response.status(400).entity("Malformed request. Illegal move").build();
+//            return Response.status(400).entity(RESPONSE_CODE_400_2).build();
+            throw new Exception(RESPONSE_CODE_400_2);
         }
     }
 
@@ -333,8 +364,8 @@ public class DropTokenResource implements GameBoardConstants {
 
             if(getMovesList.isEmpty()) return Response.status(404).entity(RESPONSE_CODE_404_1).build();
 
-            for (Object getMoveIdObj : getMovesList) {
-                Object[] obj = (Object[]) getMoveIdObj;
+            for (Object getMoveObj : getMovesList) {
+                Object[] obj = (Object[]) getMoveObj;
                 type = String.valueOf(obj[0]);
                 playerId = String.valueOf(obj[1]);
                 column = Integer.valueOf(String.valueOf(obj[2]));
@@ -344,14 +375,11 @@ public class DropTokenResource implements GameBoardConstants {
                         .column(column)
 //                    .row(row)
                 ;
-                logger.info("move={}", getMoveResponse.build());
                 getNewMovesList.add(getMoveResponse.build());
             }
             getMovesResponse
                     .moves(getNewMovesList);
             return Response.ok(getMovesResponse.build()).build();
-
-//
         } catch (Exception e) {
             logger.info("exception={}", e.toString());
             return Response.status(400).entity(RESPONSE_CODE_400_1).build();

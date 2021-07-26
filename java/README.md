@@ -2,6 +2,10 @@
 This is provided as a possible starting point for a Java implementation. This code, based on [Dropwizard](http://www.dropwizard.io/1.1.0/docs/), requires maven and Java 1.8.
 
 ## To Run the application
+After cloning the project, traverse to the 'java' folder
+```
+mvn clean package
+```
 The docker-compose.yaml file is in the 'java' folder, run the below to run the application once in the 'java' folder:
 ```
 docker network create droptoken-ntw
