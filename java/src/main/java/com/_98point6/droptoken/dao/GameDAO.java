@@ -39,7 +39,8 @@ public class GameDAO extends AbstractDAO<Games> {
 //    }
 
     public List<Games> getGames() {
-        List<Games> games = list(namedQuery("GAMES.getGames"));
+        List<Games> games = list(namedQuery("GAMES.getGames")
+                .setMaxResults(20));
         logger.info("games={}", games);
         return games;
     }
